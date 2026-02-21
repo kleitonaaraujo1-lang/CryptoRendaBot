@@ -5,6 +5,8 @@ import random
 
 TOKEN = "8545476361:AAGRIYIp70HTPKF8YIWyWpmDY6G4IMsk65A"
 
+ADMIN_ID = 5266944014
+
 bot = telebot.TeleBot(TOKEN)
 
 conn = sqlite3.connect("faucet.db", check_same_thread=False)
@@ -64,3 +66,27 @@ def balance(message):
 
 print("Bot rodando...")
 bot.polling()
+
+@bot.message_handler(commands=['admin'])
+def admin_panel(message):
+    if message.from_user.id != ADMIN_ID:
+        bot.reply_to(message, "❌ Você não é administrador.")
+        return
+
+    cursor.execute("SELECT COUNT(*) FROM users")
+    total_users = cursor.fetchone()[0]
+
+    cursor.execute("SELECT SUM(balance) FROM users")
+    total_balance = cursor.fetchone()[0]
+
+    if total_balance is None:
+        total_balance = 0
+
+    texto = f"""
+👑 PAINEL ADMIN
+
+👥 Total de usuários: {total_users}
+💰 Saldo total no sistema: {round(total_balance, 4)}
+    """
+
+    bot.send_message(message.chat.id, texto)

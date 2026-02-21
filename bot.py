@@ -66,16 +66,14 @@ def balance(message):
 
 @bot.message_handler(commands=['admin'])
 def admin_panel(message):
-    bot.reply_to(message, "ADMIN FUNCIONANDO 🔥")
+    if message.from_user.id != ADMIN_ID:
+        return
 
     cursor.execute("SELECT COUNT(*) FROM users")
     total_users = cursor.fetchone()[0]
 
     cursor.execute("SELECT SUM(balance) FROM users")
-    total_balance = cursor.fetchone()[0]
-
-    if total_balance is None:
-        total_balance = 0
+    total_balance = cursor.fetchone()[0] or 0
 
     texto = f"""
 👑 PAINEL ADMIN

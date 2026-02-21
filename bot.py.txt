@@ -1,0 +1,36 @@
+import telebot
+import sqlite3
+import time
+import random
+
+TOKEN = "8545476361:AAGRIYIp70HTPKF8YIWyWpmDY6G4IMsk65A"
+
+bot = telebot.TeleBot(TOKEN)
+
+conn = sqlite3.connect("faucet.db", check_same_thread=False)
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS users (
+    user_id INTEGER PRIMARY KEY,
+    balance REAL DEFAULT 0,
+    last_claim INTEGER DEFAULT 0
+)
+""")
+conn.commit()
+
+CLAIM_TIME = 60
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    user_id = message.from_user.id
+
+    cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
+    if not cursor.fetchone():
+        cursor.execute("INSERT INTO users (user_id) VALUES (?)", (user_id,))
+        conn.commit()
+
+    bot.reply_to(message, "Bot funcionando!")
+
+print("Bot rodando...")
+bot.polling()

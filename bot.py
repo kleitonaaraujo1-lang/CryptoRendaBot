@@ -64,9 +64,6 @@ def balance(message):
     balance = cursor.fetchone()[0]
     bot.reply_to(message, f"💎 Seu saldo: {balance} BTC")
 
-print("Bot rodando...")
-bot.polling()
-
 @bot.message_handler(commands=['admin'])
 def admin_panel(message):
     if message.from_user.id != ADMIN_ID:
@@ -90,3 +87,7 @@ def admin_panel(message):
     """
 
     bot.send_message(message.chat.id, texto)
+
+print("Bot rodando...")
+bot.polling()
+

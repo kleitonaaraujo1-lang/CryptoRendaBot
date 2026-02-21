@@ -66,9 +66,7 @@ def balance(message):
 
 @bot.message_handler(commands=['admin'])
 def admin_panel(message):
-    if message.from_user.id != ADMIN_ID:
-        bot.reply_to(message, "❌ Você não é administrador.")
-        return
+    bot.reply_to(message, "ADMIN FUNCIONANDO 🔥")
 
     cursor.execute("SELECT COUNT(*) FROM users")
     total_users = cursor.fetchone()[0]
